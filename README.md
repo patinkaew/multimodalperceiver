@@ -22,3 +22,4 @@ Image inpainting/completion:
 - Perceiver: General Perception with Iterative Attention: https://arxiv.org/pdf/2103.03206.pdf
 - Text-Guided Neural Image Inpainting: https://arxiv.org/pdf/2004.03212.pdf
 - SqueezeNet: AlexNet-level accuracy with 50x fewer parameters and <0.5MB model size: https://arxiv.org/abs/1602.07360
+- Learn, Imagine and Create: Text-to-Image Generation from Prior Knowledge: https://papers.nips.cc/paper/2019/file/d18f655c3fce66ca401d5f38b48c89af-Paper.pdf
