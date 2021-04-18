@@ -17,6 +17,7 @@ Image inpainting/completion:
 - Places 10+millions from 400+ unique scene categories http://places2.csail.mit.edu/index.html
 
 ## Required packages
+- 
 
 ## Reference
 - Perceiver: General Perception with Iterative Attention: https://arxiv.org/pdf/2103.03206.pdf
