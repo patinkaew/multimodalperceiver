@@ -16,6 +16,9 @@ Text-to-image generation:
 Image inpainting/completion:
 - Places 10+millions from 400+ unique scene categories http://places2.csail.mit.edu/index.html
 
+Audio-to-Image/Image-to-Audio
+- (TODO: Top)
+
 ## Required packages
 - 
 
@@ -25,3 +28,4 @@ Image inpainting/completion:
 - Text-Guided Neural Image Inpainting: https://arxiv.org/pdf/2004.03212.pdf
 - SqueezeNet: AlexNet-level accuracy with 50x fewer parameters and <0.5MB model size: https://arxiv.org/abs/1602.07360
 - Learn, Imagine and Create: Text-to-Image Generation from Prior Knowledge: https://papers.nips.cc/paper/2019/file/d18f655c3fce66ca401d5f38b48c89af-Paper.pdf
+- https://www.infoq.com/news/2021/04/perceiver-neural-network-model/
