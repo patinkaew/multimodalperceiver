@@ -19,6 +19,10 @@ Image inpainting/completion:
 Audio-to-Image/Image-to-Audio
 - (TODO: Top)
 
+## Useful repositories
+- https://github.com/lucidrains/perceiver-pytorch
+- https://github.com/idealwhite/TDANet
+
 ## Required packages/Installation
 - pytorch
 - tensorboard
