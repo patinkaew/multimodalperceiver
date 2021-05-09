@@ -30,6 +30,8 @@ Audio-to-Image/Image-to-Audio
 ## Reference
 - Perceiver: General Perception with Iterative Attention: https://arxiv.org/pdf/2103.03206.pdf
 - Attention is All You Need: https://arxiv.org/pdf/1706.03762.pdf
+- Show, Attend and Tell: Neural Image Caption Generation with Visual Attention: https://arxiv.org/pdf/1502.03044.pdf
+- AN IMAGE IS WORTH 16X16 WORDS: TRANSFORMERS FOR IMAGE RECOGNITION AT SCALE: https://arxiv.org/pdf/2010.11929.pdf
 - Text-Guided Neural Image Inpainting: https://arxiv.org/pdf/2004.03212.pdf
 - SqueezeNet: AlexNet-level accuracy with 50x fewer parameters and <0.5MB model size: https://arxiv.org/abs/1602.07360
 - Learn, Imagine and Create: Text-to-Image Generation from Prior Knowledge: https://papers.nips.cc/paper/2019/file/d18f655c3fce66ca401d5f38b48c89af-Paper.pdf
