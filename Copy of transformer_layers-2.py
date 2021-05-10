@@ -25,23 +25,12 @@ class PositionalEncoding(nn.Module):
         # Create an array with a "batch dimension" of 1 (which will broadcast
         # across all examples in the batch).
         pe = torch.zeros(1, max_len, embed_dim)
-        ############################################################################
-        # TODO: Construct the positional encoding array as described in            #
-        # Transformer_Captioning.ipynb. For reference, our solution is less than 5 #
-        # lines of code.                                                           #
-        ############################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
         pe = torch.multiply((torch.arange(max_len).reshape(max_len,1)),(torch.pow(10000,-2*torch.arange(embed_dim)/embed_dim).reshape(1,embed_dim))).reshape(1,max_len,embed_dim)
         for j in range(0, embed_dim, 2):
           pe[:,:,j] = torch.sin(pe[:,:,j])
           pe[:,:,j+1] = torch.cos(pe[:,:,j+1])
 
-
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        ############################################################################
-        #                             END OF YOUR CODE                             #
-        ############################################################################
 
         # Make sure the positional encodings will be saved with the model
         # parameters (mostly for completeness).
@@ -61,20 +50,12 @@ class PositionalEncoding(nn.Module):
         N, S, D = x.shape
         # Create a placeholder, to be overwritten by your code below.
         output = torch.empty((N, S, D))
-        ############################################################################
-        # TODO: Index into your array of positional encodings, and add the         #
-        # appropriate ones to the input sequence. Don't forget to apply dropout    #
-        # afterward. This should only take a few lines of code.                    #
-        ############################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        pass
+        output = self.dropout(x + self.pe[:,0:S,:])
 
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        ############################################################################
-        #                             END OF YOUR CODE                             #
-        ############################################################################
         return output
+
+
 
 class CaptioningTransformer(nn.Module):
     """
