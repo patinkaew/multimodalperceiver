@@ -32,6 +32,14 @@ Audio-to-Image/Image-to-Audio
 - Attention is All You Need: https://arxiv.org/pdf/1706.03762.pdf
 - Show, Attend and Tell: Neural Image Caption Generation with Visual Attention: https://arxiv.org/pdf/1502.03044.pdf
 - AN IMAGE IS WORTH 16X16 WORDS: TRANSFORMERS FOR IMAGE RECOGNITION AT SCALE: https://arxiv.org/pdf/2010.11929.pdf
+- Set Transformer: A Framework for Attention-based
+Permutation-Invariant Neural Networks: https://arxiv.org/pdf/1810.00825.pdf
+- Language Models are Unsupervised Multitask Learners: https://d4mucfpksywv.cloudfront.net/better-language-models/language_models_are_unsupervised_multitask_learners.pdf
+- Wide Neural Networks of Any Depth Evolve as Linear Models Under Gradient Descent: https://arxiv.org/abs/1902.06720
+- Translating Math Formula Images to LaTeX Sequences Using Deep
+Neural Networks with Sequence-level Training: https://arxiv.org/pdf/1908.11415.pdf
+- UNITER: UNiversal Image-TExt
+Representation Learning: https://arxiv.org/pdf/1909.11740.pdf
 - Text-Guided Neural Image Inpainting: https://arxiv.org/pdf/2004.03212.pdf
 - SqueezeNet: AlexNet-level accuracy with 50x fewer parameters and <0.5MB model size: https://arxiv.org/abs/1602.07360
 - Learn, Imagine and Create: Text-to-Image Generation from Prior Knowledge: https://papers.nips.cc/paper/2019/file/d18f655c3fce66ca401d5f38b48c89af-Paper.pdf
