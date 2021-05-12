@@ -18,7 +18,6 @@ def fourier_encode(x, max_freq, num_bands = 4, base = 2):
 class MultiHeadAttention(nn.Module):
     def __init__(self, query_dim, dim_head, num_heads=1, context_dim = None, dropout=0):
         super().__init__()
-        layers = []
         embed_dim = dim_head * num_heads
         if context_dim is None:
             context_dim = query_dim
@@ -56,7 +55,7 @@ class FeedForward(nn.Module):
         super().__init__()
         self.net = nn.Sequential(
             nn.Linear(dim, dim * mult),
-            nn.ReLU(),
+            nn.GELU(),
             nn.Dropout(dropout),
             nn.Linear(dim * mult, dim)
         )
@@ -65,9 +64,10 @@ class FeedForward(nn.Module):
         return self.net(x)
 
 class VisionPerceiver(nn.Module):
-    def __init__(self, input_dim, max_freq = 8,
-                 input_channels=3, depth=1,
-                 num_latents=32, latent_dim=128,
+    def __init__(self, input_dim, input_channels=3,
+                 max_freq = 8, num_freq_bands = 4,
+                 num_iterations = 1, num_transformer_blocks = 4,
+                 num_latents = 32, latent_dim = 128,
                  cross_heads = 1, cross_dim_head = 8,
                  latent_heads = 2, latent_dim_head = 8,
                  num_classes = 10,
@@ -78,10 +78,11 @@ class VisionPerceiver(nn.Module):
         self.num_latents = num_latents
         self.latent_dim = latent_dim
         self.max_freq = max_freq
+        self.num_freq_bands = num_freq_bands
         input_channels *= 9
         # perceiver stacks
         self.layers = nn.ModuleList([])
-        for i in range(depth): # build each perceiver cell
+        for i in range(num_iterations): # build each perceiver cell
             cell = nn.ModuleList([])
             # cross attention module
             cell.append(nn.LayerNorm(latent_dim))
@@ -94,12 +95,18 @@ class VisionPerceiver(nn.Module):
             cell.append(FeedForward(latent_dim, dropout = ff_dropout))
 
             # latent transformer
-            cell.append(nn.LayerNorm(latent_dim))
-            cell.append(MultiHeadAttention(latent_dim, dim_head = latent_dim_head,
+            latent_transformer = nn.ModuleList([])
+            for j in range(num_transformer_blocks):
+                latent_transformer_block = nn.ModuleList([])
+                # self attention
+                latent_transformer_block.append(nn.LayerNorm(latent_dim))
+                latent_transformer_block.append(MultiHeadAttention(latent_dim, dim_head = latent_dim_head,
                                            num_heads = latent_heads, dropout = attn_dropout))
-            # feed forward
-            cell.append(nn.LayerNorm(latent_dim))
-            cell.append(FeedForward(latent_dim, dropout = ff_dropout))
+                # feed forward
+                latent_transformer_block.append(nn.LayerNorm(latent_dim))
+                latent_transformer_block.append(FeedForward(latent_dim, dropout = ff_dropout))
+                latent_transformer.append(latent_transformer_block)
+            cell.append(latent_transformer)
 
             self.layers.append(cell)
 
@@ -107,13 +114,13 @@ class VisionPerceiver(nn.Module):
                             nn.LayerNorm(latent_dim),
                             nn.Linear(latent_dim, num_classes))
 
-    def forward(self, data, attn_mask=None, latent_init = None, seed = None):
+    def forward(self, data, attn_mask = None, latent_init = None, seed = None):
         # flatten
         N, C, H, W = data.shape
         data = data.view(N, C, -1).transpose(1, 2)
 
         # encoding
-        data = fourier_encode(data, self.max_freq)
+        data = fourier_encode(data, self.max_freq, self.num_freq_bands)
 
         # determine the initial latent vector
         if latent_init is None:
@@ -135,9 +142,11 @@ class VisionPerceiver(nn.Module):
             # feed forward
             x = cell[4](cell[3](x)) + x
             # latent transformer
-            x = cell[6](cell[5](x), attn_mask=attn_mask) + x
-            # feed forward
-            x = cell[8](cell[7](x)) + x
+            for latent_transformer in cell[5]:
+                # self attention
+                x = latent_transformer[1](latent_transformer[0](x), attn_mask=attn_mask) + x
+                # feed forward
+                x = latent_transformer[3](latent_transformer[2](x)) + x
 
         x = x.mean(dim = -2)
         return self.to_logits(x)
