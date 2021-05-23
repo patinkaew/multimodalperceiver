@@ -45,3 +45,4 @@ Representation Learning: https://arxiv.org/pdf/1909.11740.pdf
 - Learn, Imagine and Create: Text-to-Image Generation from Prior Knowledge: https://papers.nips.cc/paper/2019/file/d18f655c3fce66ca401d5f38b48c89af-Paper.pdf
 - Cross-Modal Retrieval Augmentation for Multi-Modal Classification: https://arxiv.org/abs/2104.08108
 - https://www.infoq.com/news/2021/04/perceiver-neural-network-model/
+- ROFORMER: ENHANCED TRANSFORMER WITH ROTARY POSITION EMBEDDING: https://arxiv.org/pdf/2104.09864.pdf
