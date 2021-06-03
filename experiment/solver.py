@@ -36,7 +36,7 @@ class CaptioningSolver: # simplified solver from assign3
         self.decoder.train()
         for t, (images, captions) in enumerate(loader_train):
             if self.verbose:
-                if self.global_step % print_every == 0:
+                if self.global_step % self.print_every == 0:
                     print("training iteration {}".format(self.global_step + 1))
             # move to device
             images = images.to(device=self.device, dtype=dtype)
