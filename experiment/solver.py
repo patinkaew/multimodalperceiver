@@ -10,8 +10,8 @@ class CaptioningSolver: # simplified solver from assign3
                 scheduler = None,
                 print_every=10, verbose=True,
                 device = torch.device("cpu")):
-        self.encoder = encoder.to(device=device, dtype=dtype)
-        self.decoder = decoder.to(device=device, dtype=dtype)
+        self.encoder = encoder.to(device=device, dtype=torch.float32)
+        self.decoder = decoder.to(device=device, dtype=torch.float32)
         self.encoder_optimizer = encoder_optimizer
         self.decoder_optimizer = decoder_optimizer
         self.scheduler = scheduler
