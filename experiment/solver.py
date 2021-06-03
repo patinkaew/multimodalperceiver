@@ -32,10 +32,11 @@ class CaptioningSolver: # simplified solver from assign3
     def _train_step(self, loader_train): # train for one epoch
         self.encoder.train()
         self.decoder.train()
+        num_batches = len(loader_train)
         for t, (images, captions) in enumerate(loader_train):
             if self.verbose:
                 if self.global_step % self.print_every == 0:
-                    print("training iteration {}".format(self.global_step + 1))
+                    print("training batch {} of {} batches".format(t, num_batches))
             # move to device
             images = images.to(device=self.device, dtype=torch.float32)
             captions = captions.to(device=self.device, dtype=torch.long)
@@ -65,7 +66,7 @@ class CaptioningSolver: # simplified solver from assign3
             self.decoder.eval()
             reference = []
             hypothesis = []
-            for t, (images, captions) in enumerate(loader_train):
+            for t, (images, captions) in enumerate(loader_val):
                 # move to device
                 images = images.to(device=self.device, dtype=torch.float32)
                 captions = captions.to(device=self.device, dtype=torch.long)
