@@ -294,7 +294,7 @@ class CaptioningTransformer(nn.Module):
 
         return scores
 
-    def sample(self, features, max_length=30):
+    def sample(self, features, max_length=50, device=torch.device("cpu")):
         """
         Given image features, use greedy decoding to predict the image caption.
 
@@ -306,7 +306,6 @@ class CaptioningTransformer(nn.Module):
          - captions: captions for each example, of shape (N, max_length)
         """
         with torch.no_grad():
-            features = torch.Tensor(features)
             N = features.shape[0]
 
             # Create an empty captions tensor (where all tokens are NULL).
@@ -317,6 +316,7 @@ class CaptioningTransformer(nn.Module):
             partial_caption = torch.LongTensor(partial_caption)
             # [N] -> [N, 1]
             partial_caption = partial_caption.unsqueeze(1)
+            partial_caption = partial_caption.to(device)
 
             for t in range(max_length):
 
@@ -329,9 +329,10 @@ class CaptioningTransformer(nn.Module):
                 word = torch.argmax(output_logits, axis=1)
 
                 # Update our overall caption and our current partial caption.
-                captions[:, t] = word.numpy()
+                captions[:, t] = word.cpu().numpy()
                 word = word.unsqueeze(1)
                 partial_caption = torch.cat([partial_caption, word], dim=1)
+                partial_caption = partial_caption.to(device)
 
             return captions
 
