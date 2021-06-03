@@ -48,7 +48,6 @@ class CaptioningSolver: # simplified solver from assign3
             captions_in = captions[:, :-1]
             captions_out = captions[:, 1:]
             mask = captions_out != self.decoder._null
-            mask = torch.LongTensor(mask).to(device=self.device, dtype=dtype)
 
             # produce caption scores
             scores = self.decoder(features, captions_in)
@@ -79,7 +78,6 @@ class CaptioningSolver: # simplified solver from assign3
                 captions_in = captions[:, :-1]
                 captions_out = captions[:, 1:]
                 mask = captions_out != self.decoder._null
-                mask = torch.LongTensor(mask).to(device=self.device, dtype=dtype)
 
                 # produce caption scores
                 scores = self.decoder(features, captions_in)
