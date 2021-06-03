@@ -122,14 +122,14 @@ class CaptioningSolver: # simplified solver from assign3
                     print("adjusting LR scheduler after epoch {} of {} epochs".format(e+1, num_epochs))
                 self.scheduler.step()
 
-    def temporal_softmax_loss(self, logits, t_captions_out, t_mask):
+    def temporal_softmax_loss(self, x, y, mask):
         N, T, V = x.shape
 
         x_flat = x.reshape(N * T, V)
         y_flat = y.reshape(N * T)
         mask_flat = mask.reshape(N * T)
 
-        loss = torch.nn.functional.cross_entropy(x_flat,  y_flat, reduction= "none")
+        loss = torch.nn.functional.cross_entropy(x_flat,  y_flat, reduction='none')
         loss = torch.mul(loss, mask_flat)
         loss = torch.mean(loss)
 
