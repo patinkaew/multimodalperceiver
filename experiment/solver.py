@@ -47,7 +47,7 @@ class CaptioningSolver: # simplified solver from assign3
             # prepare captions
             captions_in = captions[:, :-1]
             captions_out = captions[:, 1:]
-            mask = np.array(captions_out != self.decoder._null, dtype=int)
+            mask = captions_out != self.decoder._null
 
             t_features = torch.Tensor(features)
             t_captions_in = torch.LongTensor(captions_in)
@@ -82,7 +82,7 @@ class CaptioningSolver: # simplified solver from assign3
                 # prepare captions
                 captions_in = captions[:, :-1]
                 captions_out = captions[:, 1:]
-                mask = np.array(captions_out != self.decoder._null, dtype=int)
+                mask = captions_out != self.decoder._null
 
                 t_features = torch.Tensor(features)
                 t_captions_in = torch.LongTensor(captions_in)
