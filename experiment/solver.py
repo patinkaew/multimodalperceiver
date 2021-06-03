@@ -48,16 +48,12 @@ class CaptioningSolver: # simplified solver from assign3
             captions_in = captions[:, :-1]
             captions_out = captions[:, 1:]
             mask = captions_out != self.decoder._null
-
-            t_features = torch.Tensor(features)
-            t_captions_in = torch.LongTensor(captions_in)
-            t_captions_out = torch.LongTensor(captions_out)
-            t_mask = torch.LongTensor(mask).to(device=self.device, dtype=dtype)
+            mask = torch.LongTensor(mask).to(device=self.device, dtype=dtype)
 
             # produce caption scores
-            scores = self.decoder(t_features, t_captions_in)
+            scores = self.decoder(features, captions_in)
 
-            loss = self.transformer_temporal_softmax_loss(scores, t_captions_out, t_mask)
+            loss = self.transformer_temporal_softmax_loss(scores, captions_out, mask)
             self.train_loss_history.append(loss.detach().numpy())
             self.decoder_optimizer.zero_grad()
             self.encoder_optimizer.zero_grad()
@@ -83,16 +79,12 @@ class CaptioningSolver: # simplified solver from assign3
                 captions_in = captions[:, :-1]
                 captions_out = captions[:, 1:]
                 mask = captions_out != self.decoder._null
-
-                t_features = torch.Tensor(features)
-                t_captions_in = torch.LongTensor(captions_in)
-                t_captions_out = torch.LongTensor(captions_out)
-                t_mask = torch.LongTensor(mask).to(device=self.device, dtype=dtype)
+                mask = torch.LongTensor(mask).to(device=self.device, dtype=dtype)
 
                 # produce caption scores
-                scores = self.decoder(t_features, t_captions_in)
+                scores = self.decoder(features, captions_in)
 
-                loss = self.transformer_temporal_softmax_loss(scores, t_captions_out, t_mask)
+                loss = self.transformer_temporal_softmax_loss(scores, captions_out, mask)
                 self.val_loss_history.append(loss.detach().numpy())
 
                 decode_refs = []
