@@ -53,12 +53,10 @@ class FeedForward(nn.Module):
 
 class EncoderPerceiver(nn.Module):
     def __init__(self, input_dim, input_channels=3,
-                 max_freq = 8, num_freq_bands = 4,
                  num_iterations = 1, num_transformer_blocks = 4,
                  num_latents = 32, latent_dim = 128,
                  cross_heads = 1, cross_dim_head = 8,
                  latent_heads = 2, latent_dim_head = 8,
-                 num_classes = 10,
                  attn_dropout = 0., ff_dropout = 0.,
                  latent_init = None, seed = None):
 

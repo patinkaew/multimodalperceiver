@@ -1,14 +1,21 @@
-from collections import Counter
+# adapt from https://www.kaggle.com/mdteach/torch-data-loader-flicker-8k
+from collections import Counter, defaultdict
+import numpy as np
 import spacy
 import torch
 import pandas as pd
+import os
+from PIL import Image
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader,Dataset
+from model.utils import decode_captions
+
+spacy_eng = spacy.load("en_core_web_sm")
 
 class Vocabulary:
     def __init__(self,freq_threshold):
         #setting the pre-reserved tokens int to string tokens
-        self.itos = {0:"<PAD>",1:"<SOS>",2:"<EOS>",3:"<UNK>"}
+        self.itos = {0:"<NULL>",1:"<START>",2:"<END>",3:"<UNK>"}
 
         #string to int tokens
         #its reverse dict self.itos
@@ -20,7 +27,7 @@ class Vocabulary:
 
     @staticmethod
     def tokenize(text):
-        return [token.text.lower() for token in spacy.load("en_core_web_sm").tokenizer(text)]
+        return [token.text.lower() for token in spacy_eng.tokenizer(text)]
 
     def build_vocab(self, sentence_list):
         frequencies = Counter()
@@ -41,11 +48,36 @@ class Vocabulary:
         tokenized_text = self.tokenize(text)
         return [ self.stoi[token] if token in self.stoi else self.stoi["<UNK>"] for token in tokenized_text ]
 
+class CaptionAlias:
+    def __init__(self, caption_df, vocab):
+        self.img_to_captions = defaultdict(list)
+        self.caption_to_img = dict()
+        for img, caption in caption_df.to_numpy():
+            caption_vec = []
+            caption_vec += [vocab.stoi["<START>"]]
+            caption_vec += vocab.numericalize(caption)
+            caption_vec += [vocab.stoi["<END>"]]
+            decode = decode_captions(np.array(caption_vec), vocab.itos)
+            self.img_to_captions[img].append(decode)
+            self.caption_to_img[decode] = img
+
+        self.caption_alias = dict()
+        for img, captions in self.img_to_captions.items():
+            for caption in captions:
+                self.caption_alias[caption] = captions
+
+    def __call__(self, caption):
+        return self.caption_alias[caption]
+
+    def __getitem__(self, caption):
+        return self.caption_alias[caption]
+
+
 class FlickrDataset(Dataset):
     """
     FlickrDataset
     """
-    def __init__(self,root_dir,caption_file,transform=None,freq_threshold=5):
+    def __init__(self,root_dir,caption_file,transform=None,freq_threshold=5, verbose=False):
         self.root_dir = root_dir
         self.df = pd.read_csv(caption_file)
         self.transform = transform
@@ -55,9 +87,15 @@ class FlickrDataset(Dataset):
         self.captions = self.df["caption"]
 
         #Initialize vocabulary and build vocab
+        if verbose:
+            print("building vocab")
         self.vocab = Vocabulary(freq_threshold)
         self.vocab.build_vocab(self.captions.tolist())
 
+        #Initialize caption alias for BLEU computation
+        if verbose:
+            print("buidling caption alias")
+        self.caption_alias = CaptionAlias(self.df, self.vocab)
 
     def __len__(self):
         return len(self.df)
@@ -69,14 +107,16 @@ class FlickrDataset(Dataset):
         img = Image.open(img_location).convert("RGB")
 
         #apply the transfromation to the image
+        print("applying transformation")
         if self.transform is not None:
             img = self.transform(img)
+        print("done transformation")
 
         #numericalize the caption text
         caption_vec = []
-        caption_vec += [self.vocab.stoi["<SOS>"]]
+        caption_vec += [self.vocab.stoi["<START>"]]
         caption_vec += self.vocab.numericalize(caption)
-        caption_vec += [self.vocab.stoi["<EOS>"]]
+        caption_vec += [self.vocab.stoi["<END>"]]
 
         return img, torch.tensor(caption_vec)
 
