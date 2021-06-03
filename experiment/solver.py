@@ -27,11 +27,14 @@ class CaptioningSolver: # simplified solver from assign3
         self.global_step = 0
         self.train_loss_history = []
         self.val_loss_history = []
+        self.train_bleu = []
         self.val_bleu = []
 
     def _train_step(self, loader_train): # train for one epoch
         self.encoder.train()
         self.decoder.train()
+        reference = []
+        hypothesis = []
         num_batches = len(loader_train)
         for t, (images, captions) in enumerate(loader_train):
             if self.verbose:
@@ -59,6 +62,24 @@ class CaptioningSolver: # simplified solver from assign3
             self.decoder_optimizer.step()
             self.encoder_optimizer.step()
             self.global_step += 1
+            
+            with torch.no_grad():
+                for caption in captions:
+                    decode_ref = decode_captions(caption.detach().cpu().numpy(), self.idx_to_word)
+                    decode_ref_alias = [strip_start_end(x) for x in self.caption_alias[decode_ref]]
+                    reference.append(decode_ref_alias)
+
+                caption_preds = torch.argmax(scores, dim=2)             
+                decode_preds = decode_captions(caption_preds.detach().cpu().numpy() , self.idx_to_word)
+                for decode_pred in decode_preds:
+                    hypothesis.append(strip_start_end(decode_pred))
+            
+        with torch.no_grad():
+            assert len(reference) == len(hypothesis)
+            if self.verbose:
+                print("computing BLEU score on training")
+            bleu = corpus_bleu(reference, hypothesis)
+            self.train_bleu.append(bleu)
 
     def _val_step(self, loader_val):
         with torch.no_grad():
@@ -66,6 +87,7 @@ class CaptioningSolver: # simplified solver from assign3
             self.decoder.eval()
             reference = []
             hypothesis = []
+            num_batches = len(loader_val)
             for t, (images, captions) in enumerate(loader_val):
                 if self.verbose:
                     if t % self.print_every == 0:
@@ -87,15 +109,15 @@ class CaptioningSolver: # simplified solver from assign3
                 loss = self.temporal_softmax_loss(scores, captions_out, mask)
                 self.val_loss_history.append(loss.detach().cpu().numpy())
 
-                decode_refs = []
                 for caption in captions:
                     decode_ref = decode_captions(caption.detach().cpu().numpy(), self.idx_to_word)
-                    decode_refs.append(self.caption_alias[decode_ref])
-                reference.append(decode_refs)
+                    decode_ref_alias = [strip_start_end(x) for x in self.caption_alias[decode_ref]]
+                    reference.append(decode_ref_alias)
 
-                caption_pred = torch.argmax(scores, dim=2)
-                decode_pred = decode_captions(caption_pred.detach().cpu().numpy(), self.idx_to_word)
-                hypothesis.append(decode_pred)
+                caption_preds = torch.argmax(scores, dim=2)                
+                decode_preds = decode_captions(caption_preds.detach().cpu().numpy() , self.idx_to_word)
+                for decode_pred in decode_preds:
+                    hypothesis.append(strip_start_end(decode_pred))
 
             assert len(reference) == len(hypothesis)
             if self.verbose:
