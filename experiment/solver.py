@@ -86,7 +86,7 @@ class CaptioningSolver: # simplified solver from assign3
 
                 decode_refs = []
                 for caption in captions:
-                    decode_ref = decode_captions(caption.detach().numpy(), self.idx_to_word)
+                    decode_ref = decode_captions(caption.detach().cpu().numpy(), self.idx_to_word)
                     decode_refs.append(caption_alias(decode_ref))
                 reference.append(decode_refs)
 
