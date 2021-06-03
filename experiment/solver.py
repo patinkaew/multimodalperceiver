@@ -50,7 +50,7 @@ class CaptioningSolver: # simplified solver from assign3
             # produce caption scores
             scores = self.decoder(features, captions_in)
 
-            loss = self.transformer_temporal_softmax_loss(scores, captions_out, mask)
+            loss = self.temporal_softmax_loss(scores, captions_out, mask)
             self.train_loss_history.append(loss.detach().numpy())
             self.decoder_optimizer.zero_grad()
             self.encoder_optimizer.zero_grad()
@@ -80,7 +80,7 @@ class CaptioningSolver: # simplified solver from assign3
                 # produce caption scores
                 scores = self.decoder(features, captions_in)
 
-                loss = self.transformer_temporal_softmax_loss(scores, captions_out, mask)
+                loss = self.temporal_softmax_loss(scores, captions_out, mask)
                 self.val_loss_history.append(loss.detach().numpy())
 
                 decode_refs = []
