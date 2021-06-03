@@ -3,8 +3,6 @@ import torch
 from nltk.translate.bleu_score import corpus_bleu
 from model.utils import strip_start_end, decode_captions
 
-dtype = torch.float32
-
 class CaptioningSolver: # simplified solver from assign3
     def __init__(self, encoder, decoder,
                 encoder_optimizer, decoder_optimizer,
@@ -39,8 +37,8 @@ class CaptioningSolver: # simplified solver from assign3
                 if self.global_step % self.print_every == 0:
                     print("training iteration {}".format(self.global_step + 1))
             # move to device
-            images = images.to(device=self.device, dtype=dtype)
-            captions = captions.to(device=self.device, dtype=dtype)
+            images = images.to(device=self.device, dtype=torch.float32)
+            captions = captions.to(device=self.device, dtype=torch.long)
             # compute image features
             features = self.encoder(images)
 
@@ -69,8 +67,8 @@ class CaptioningSolver: # simplified solver from assign3
             hypothesis = []
             for t, (images, captions) in enumerate(loader_train):
                 # move to device
-                images = images.to(device=self.device, dtype=dtype)
-                captions = captions.to(device=self.device, dtype=dtype)
+                images = images.to(device=self.device, dtype=torch.float32)
+                captions = captions.to(device=self.device, dtype=torch.long)
                 # compute image features
                 features = self.encoder(images)
 
