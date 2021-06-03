@@ -20,7 +20,7 @@ class Vocabulary:
 
     @staticmethod
     def tokenize(text):
-        return [token.text.lower() for token in spacy.load("en").tokenizer(text)]
+        return [token.text.lower() for token in spacy.load("en_core_web_sm").tokenizer(text)]
 
     def build_vocab(self, sentence_list):
         frequencies = Counter()
