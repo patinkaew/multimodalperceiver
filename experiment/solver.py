@@ -91,7 +91,7 @@ class CaptioningSolver: # simplified solver from assign3
                 reference.append(decode_refs)
 
                 caption_pred = torch.argmax(scores, dim=2)
-                decode_pred = decode_captions(caption_pred, self.idx_to_word)
+                decode_pred = decode_captions(caption_pred.detach().cpu().numpy(), self.idx_to_word)
                 hypothesis.append(decode_pred)
 
             assert len(reference) == len(hypothesis)
