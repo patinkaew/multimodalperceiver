@@ -51,7 +51,7 @@ class CaptioningSolver: # simplified solver from assign3
             scores = self.decoder(features, captions_in)
 
             loss = self.temporal_softmax_loss(scores, captions_out, mask)
-            self.train_loss_history.append(loss.detach().numpy())
+            self.train_loss_history.append(loss.detach().cpu().numpy())
             self.decoder_optimizer.zero_grad()
             self.encoder_optimizer.zero_grad()
             loss.backward()
@@ -81,15 +81,15 @@ class CaptioningSolver: # simplified solver from assign3
                 scores = self.decoder(features, captions_in)
 
                 loss = self.temporal_softmax_loss(scores, captions_out, mask)
-                self.val_loss_history.append(loss.detach().numpy())
+                self.val_loss_history.append(loss.detach().cpu().numpy())
 
                 decode_refs = []
                 for caption in captions:
-                    decode_ref = decode_captions(caption.detach().numpy(), self.idx_to_word)
+                    decode_ref = decode_captions(caption, self.idx_to_word)
                     decode_refs.append(caption_alias(decode_ref))
                 reference.append(decode_refs)
 
-                caption_pred = torch.argmax(scores, dim=2).detach().numpy()
+                caption_pred = torch.argmax(scores, dim=2)
                 decode_pred = decode_captions(caption_pred, self.idx_to_word)
                 hypothesis.append(decode_pred)
 
