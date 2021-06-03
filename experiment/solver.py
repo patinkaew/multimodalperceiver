@@ -42,7 +42,7 @@ class CaptioningSolver: # simplified solver from assign3
             images = images.to(device=self.device, dtype=dtype)
             captions = captions.to(device=self.device, dtype=dtype)
             # compute image features
-            features = encoder(images)
+            features = self.encoder(images)
 
             # prepare captions
             captions_in = captions[:, :-1]
@@ -77,7 +77,7 @@ class CaptioningSolver: # simplified solver from assign3
                 images = images.to(device=self.device, dtype=dtype)
                 captions = captions.to(device=self.device, dtype=dtype)
                 # compute image features
-                features = encoder(images)
+                features = self.encoder(images)
 
                 # prepare captions
                 captions_in = captions[:, :-1]
