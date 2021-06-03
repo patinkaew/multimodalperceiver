@@ -107,10 +107,8 @@ class FlickrDataset(Dataset):
         img = Image.open(img_location).convert("RGB")
 
         #apply the transfromation to the image
-        print("applying transformation")
         if self.transform is not None:
             img = self.transform(img)
-        print("done transformation")
 
         #numericalize the caption text
         caption_vec = []
