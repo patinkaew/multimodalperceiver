@@ -25,7 +25,10 @@ Audio-to-Image/Image-to-Audio
 
 ## Required packages/Installation
 - pytorch
-- tensorboard
+- torchvision
+- pillow
+- spacy
+- nltk
 
 ## Reference
 - Perceiver: General Perception with Iterative Attention: https://arxiv.org/pdf/2103.03206.pdf
